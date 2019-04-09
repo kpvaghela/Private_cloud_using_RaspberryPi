@@ -1,0 +1,136 @@
+
+**Step 10 to 12**
+
+10. Now let’s configure the web server configuration so that it runs Owncloud correctly.
+
+sudo nano /etc/nginx/sites-available/default
+
+11. Now simply copy and paste the following code into the file.
+
+  upstream php-handler {
+      server 127.0.0.1:9000;
+      server unix:/var/run/php/php7.0-fpm.sock;
+  }
+
+  server {
+      listen 80;
+      server_name 192.168.1.116;
+
+      #Allow letsencrypt through
+      location /.well-known/acme-challenge/ {
+          root /var/www/owncloud;
+      }
+
+      # enforce https
+      location / {
+          return 301 https://$server_name$request_uri;
+      }
+  }
+  
+  server {
+      listen 443 ssl http2;
+      server_name 192.168.1.116;
+  
+      ssl_certificate /etc/nginx/cert.pem;
+      ssl_certificate_key /etc/nginx/cert.key;
+
+      ssl_session_timeout 5m;
+      ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+      ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:AES256+EDH';
+      ssl_dhparam /etc/nginx/dh4096.pem;
+      ssl_prefer_server_ciphers on;
+      keepalive_timeout    70;
+      ssl_stapling on;
+      ssl_stapling_verify on;
+  
+      add_header X-Content-Type-Options nosniff;
+      add_header X-Frame-Options "SAMEORIGIN";
+      add_header X-XSS-Protection "1; mode=block";
+      add_header X-Robots-Tag none;
+      add_header X-Download-Options noopen;
+      add_header X-Permitted-Cross-Domain-Policies none;
+  
+      root /var/www/owncloud/;
+  
+      location = /robots.txt {
+          allow all;
+          log_not_found off;
+          access_log off;
+      }
+  
+      # The following 2 rules are only needed for the user_webfinger app.
+      # Uncomment it if you're planning to use this app.
+      #rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+      #rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json last;
+  
+      location = /.well-known/carddav {
+          return 301 $scheme://$host/remote.php/dav;
+      }
+      location = /.well-known/caldav {
+          return 301 $scheme://$host/remote.php/dav;
+      }
+  
+      # set max upload size
+      client_max_body_size 512M;
+      fastcgi_buffers 8 4K;
+      fastcgi_ignore_headers X-Accel-Buffering;
+  
+      gzip off;
+  
+      error_page 403 /core/templates/403.php;
+      error_page 404 /core/templates/404.php;
+  
+      location / {
+          rewrite ^ /index.php$uri;
+      }
+  
+      location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+          return 404;
+      }
+      location ~ ^/(?:\.|autotest|occ|issue|indie|db_|console) {
+          return 404;
+      }
+  
+      location ~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+|core/templates/40[34])\.php(?:$|/) {
+          fastcgi_split_path_info ^(.+\.php)(/.*)$;
+          include fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+          fastcgi_param PATH_INFO $fastcgi_path_info;
+          fastcgi_param HTTPS on;
+          fastcgi_param modHeadersAvailable true;
+          fastcgi_param front_controller_active true;
+          fastcgi_read_timeout 180;
+          fastcgi_pass php-handler;
+          fastcgi_intercept_errors on;
+          fastcgi_request_buffering off; #Available since NGINX 1.7.11
+      }
+  
+      location ~ ^/(?:updater|ocs-provider)(?:$|/) {
+          try_files $uri $uri/ =404;
+          index index.php;
+      }
+  
+      location ~ \.(?:css|js)$ {
+          try_files $uri /index.php$uri$is_args$args;
+          add_header Cache-Control "max-age=15778463";
+          # Before enabling Strict-Transport-Security headers please read into this topic first.
+          #add_header Strict-Transport-Security "max-age=15552000; includeSubDomains";
+          add_header X-Content-Type-Options nosniff;
+          add_header X-Frame-Options "SAMEORIGIN";
+          add_header X-XSS-Protection "1; mode=block";
+          add_header X-Robots-Tag none;
+          add_header X-Download-Options noopen;
+          add_header X-Permitted-Cross-Domain-Policies none;
+          access_log off;
+      }
+  
+      location ~ \.(?:svg|gif|png|html|ttf|woff|ico|jpg|jpeg|map)$ {
+          add_header Cache-Control "public, max-age=7200";
+          try_files $uri /index.php$uri$is_args$args;
+          access_log off;
+      }
+  }
+12. Now simply save and exit.
+
+

@@ -1,0 +1,11 @@
+Authors : 
+Kartvyasinh Vaghela(C0700751)
+Sanikumar Faldu (C0726356)
+Mohammed Asim Chaudhary (C0727101)
+Sanchit Sharma (C0727978)
+****Capstone project - Lambton college in Toronto***
+***program : Cloud Computing for Big Data***
+Guided by: Mr. William Pourmajidi
+Project title : Private cloud using Raspberry pi
+Dt. 7th of April 2019
+**all rights reserved** 

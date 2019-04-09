@@ -1,0 +1,21 @@
+**Step 6 to 9**
+
+
+6. Now we need to create an SSL certificate you can do this by running the following command:
+
+sudo openssl req $@ -new -x509 -days 730 -nodes -out /etc/nginx/cert.pem -keyout /etc/nginx/cert.key
+
+
+7. In addition to the SSL certificate we also need to generate ourselves a custom dhparam file, this file helps ensure that our SSL connections are kept secure, by default this would use a default one that isn’t nearly as secure.
+
+To generate a 4096 byte long DH Param run the following command on your Raspberry Pi.
+
+sudo openssl dhparam -out /etc/nginx/dh4096.pem 4096
+8. Now we need to chmod the three cert files we just generated.
+
+sudo chmod 600 /etc/nginx/cert.pem
+sudo chmod 600 /etc/nginx/cert.key
+sudo chmod 600 /etc/nginx/dh4096.pem
+9. Let’s clear the server config file since we will be copying and pasting our own version in it.
+
+sudo sh -c "echo '' > /etc/nginx/sites-available/default"

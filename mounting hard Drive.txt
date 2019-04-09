@@ -1,0 +1,29 @@
+
+
+These stepsare for mounting and allowing Owncloud to store files onto an external hard drive.
+
+1. Firstly if you have an NTFS drive we will need to install an NTFS package by entering the following:
+
+sudo apt-get install ntfs-3g
+2. Now let’s make a directory we can mount.
+
+sudo mkdir /media/ownclouddrive
+3. Now we need to get the GID, UID, and the UUID as we will need to use these soon. Enter the following command for the GID:
+
+id -g www-data
+4. Now for the UID enter the following command:
+
+id -u www-data
+5. Also if we get the UUID of the hard drive, the Pi will remember this drive even if you plug it into a different USB port.
+
+ls -l /dev/disk/by-uuid
+
+Copy the light blue letters and numbers of the last entry (Should have something like -> ../../sda1 at the end of it).
+
+6. Now let’s add your drive into the fstab file so that it will boot with the correct permissions.
+
+sudo nano /etc/fstab
+7. Now add the following line to the bottom of the file, updating UID, GUID and the UUID with the values we got above. (The following should all be on a single line)
+
+UUID=DC72-0315 /media/ownclouddrive auto nofail,uid=33,gid=33,umask=0027,dmask=0027,noatime 0 0
+8. Reboot the Raspberry Pi, and the drives should automatically be mounted. If they are mounted, we’re all good to go.

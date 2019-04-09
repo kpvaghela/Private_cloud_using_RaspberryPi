@@ -1,0 +1,15 @@
+In this project, we’re going to make a Raspberry Pi Owncloud server this can act as your very own personal cloud storage.
+
+As the protection of your privacy becomes harder and harder, you may be thinking of moving your files to a private cloud storage. If this is the case, then this is perfect for you.
+
+It is important to remember that since your data will be stored on your local network, you will end up with using more bandwidth if uploading and downloading files from outside your network.
+
+**Requirements**
+Raspberry Pi3b+
+SD Card (32GB+ Recommended)
+External Hard drive or USB Drive
+USB Keyboard
+USB Mouse
+
+
+Credit: pimylifeup

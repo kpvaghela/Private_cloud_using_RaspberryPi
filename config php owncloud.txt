@@ -1,0 +1,51 @@
+**step 13 to 23**
+
+13. Now that is done there is a few more configurations we will need to update, first open up the PHP config file by entering.
+
+sudo nano /etc/php/7.0/fpm/php.ini
+
+14. In this file, we want to find and update the following lines. (Ctrl + w allows you to search)
+
+upload_max_filesize = 2000M
+post_max_size = 2000M
+
+15. Once done save and exit. Now we need to edit the conf file by entering the following:
+
+	sudo nano /etc/php/7.0/fpm/pool.d/www.conf
+16. Update the listen line to the following:
+
+listen = 127.0.0.1:9000
+17. Once done, save and then exit. Now we also need to edit the dphys-swapfile. To do this open up the file by entering:
+
+sudo nano /etc/dphys-swapfile
+18. Now update the conf_swapsize line to the following:
+
+CONF_SWAPSIZE = 512
+19. Restart the Pi by entering:
+
+sudo reboot
+20. Once the Pi has restarted, you will need to install Owncloud onto the Raspberry Pi. Do this by entering the following commands:
+
+sudo mkdir -p /var/www/owncloud
+sudo wget https://download.owncloud.org/community/owncloud-10.0.9.tar.bz2
+sudo tar xvf owncloud-10.0.9.tar.bz2
+sudo mv owncloud/ /var/www/
+sudo chown -R www-data:www-data /var/www
+rm -rf owncloud owncloud-10.0.9.tar.bz2
+21. Now we need to open up the .user.ini file to enforce some of the changes we made earlier in the tutorial
+
+sudo nano /var/www/owncloud/.user.ini
+22. In here update the following values so they are 2000M:
+
+upload_max_filesize=2000M
+
+post_max_size=2000M
+
+memory_limit=2000M
+23. Now that is done we should be able to connect to Owncloud at your PI’s IP address.
+
+Before you set up the admin account, you might want to mount an external drive, so you have lots of disk space for your Raspberry Pi Owncloud Server. 
+
+
+** Thats all for setting Raspberry pi **
+**Next step is to mount harddisk to raspberry pi which accept data from external networks**

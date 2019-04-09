@@ -1,0 +1,21 @@
+Enter the following to bring up our default server file:
+
+sudo nano /etc/nginx/sites-available/default
+Once you have updated the IP’s in the server file, you will need to add the external IP to your trusted IP list and make sure Owncloud doesn’t overwrite it. To do this open up the Owncloud config file and enter:
+
+sudo nano /var/www/owncloud/config/config.php
+In here add a new item to the trusted domains array (This will be your external IP address). Your new entry should look something like this (x are just placeholders).
+
+1 => 'xxx.xxx.xxx.xxx',
+Finally update the URL of the overwrite.cli.url line to your IP Address. It should look something like this.
+
+'overwrite.cli.url' => 'https://xxx.xxx.xxx.xxx',
+
+Once done, restart the Nginx service by entering the following:
+
+sudo service nginx restart
+
+
+When connecting to the Owncloud server externally, you will need to make sure you use https otherwise you will get an invalid request in your browser.
+
+Setting up port forwarding is super easy to do and allows you to have access to your personal cloud on the go. Also after you have done this, you can still connect via your local IP as well.
